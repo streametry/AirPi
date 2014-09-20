@@ -3,23 +3,23 @@ import requests
 import json
 
 class Streametry(output.Output):
-	requiredData = ["hostPort","FeedID"]
+	requiredData = ["url"]
 	optionalData = []
 	def __init__(self,data):
-		self.hostPort=data["hostPort"]
-		self.FeedID=data["FeedID"]
+		self.url=data["url"]
+
 	def outputData(self,dataPoints):
 		arr = []
 		data = {}
 		for i in dataPoints:
 			data[ i["name"] ] = i["value"]
-			#arr.append({"id":i["name"],"current_value":i["value"]})
-		a = json.dumps(data)
-		print a
+			
+		jsonData = json.dumps(data)
+		
 		try:
-			z = requests.put("http://streametry.com:8181/demo/airpi/home1",headers={},data=a)
+			z = requests.put(self.url,headers={},data=jsonData)
 			if z.text!="": 
-				print "Streametry Error: " + z.text
+				print "Error: " + z.text
 				return False
 		except Exception:
 			return False
